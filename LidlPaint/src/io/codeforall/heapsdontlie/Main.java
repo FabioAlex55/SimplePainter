@@ -7,6 +7,12 @@ public class Main {
 
     public static void main(String[] args) {
 
+    /* Commands:
+          P= Paint;
+          L= Load;
+          S= Save;
+          D= Delete;
+     */
 
 
      // Cell cell = new cell(10, 40);

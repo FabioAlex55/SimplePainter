@@ -12,6 +12,8 @@ public class Cell {
     protected int x;
     protected int y;
 
+    private boolean isPainted;
+
 
 
 
@@ -29,6 +31,16 @@ public class Cell {
     public void changeColor(){
         this.rectangle.setColor(Color.BLACK);
         this.rectangle.fill();
+        isPainted = true;
+    }
+
+    public void resetColour(){
+        this.rectangle.draw();
+        isPainted = false;
+    }
+
+    public boolean isPainted() {
+        return isPainted;
     }
 
 

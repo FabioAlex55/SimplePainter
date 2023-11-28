@@ -11,6 +11,8 @@ public class Cursor extends Cell implements KeyboardHandler {
 
     private Keyboard keyboard;
 
+    private boolean isDeleting;
+    private boolean isPressed;
 
     public Cursor(int x, int y, Grid grid) {
         super(x, y, grid);
@@ -20,8 +22,6 @@ public class Cursor extends Cell implements KeyboardHandler {
         init();
 
     }
-
-
 
 
     public void moveLeft(){
@@ -65,9 +65,6 @@ public class Cursor extends Cell implements KeyboardHandler {
 
 
 
-
-
-
    public void init(){
        KeyboardEvent left = new KeyboardEvent();
        left.setKey(KeyboardEvent.KEY_LEFT);
@@ -89,15 +86,37 @@ public class Cursor extends Cell implements KeyboardHandler {
        paint.setKey(KeyboardEvent.KEY_P);
        paint.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
 
+       KeyboardEvent stopPaiting= new KeyboardEvent();
+       stopPaiting.setKey(KeyboardEvent.KEY_P);
+       stopPaiting.setKeyboardEventType(KeyboardEventType.KEY_RELEASED);
+
+       KeyboardEvent delete = new KeyboardEvent();
+       delete.setKey(KeyboardEvent.KEY_D);
+       delete.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
+
+       KeyboardEvent stopDelete = new KeyboardEvent();
+       stopDelete.setKey(KeyboardEvent.KEY_D);
+       stopDelete.setKeyboardEventType(KeyboardEventType.KEY_RELEASED);
+
+       KeyboardEvent save = new KeyboardEvent();
+       save.setKey(KeyboardEvent.KEY_S);
+       save.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
+
+       KeyboardEvent load = new KeyboardEvent();
+       load.setKey(KeyboardEvent.KEY_L);
+       load.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
 
 
+       keyboard.addEventListener(save);
+       keyboard.addEventListener(load);
+       keyboard.addEventListener(stopDelete);
+       keyboard.addEventListener(delete);
        keyboard.addEventListener(paint);
        keyboard.addEventListener(left);
        keyboard.addEventListener(right);
        keyboard.addEventListener(up);
        keyboard.addEventListener(down);
-
-
+       keyboard.addEventListener(stopPaiting);
 
    }
 
@@ -106,7 +125,23 @@ public class Cursor extends Cell implements KeyboardHandler {
         cell.changeColor();
     }
 
+    public void delete(){
+        Cell cell = grid.getList()[y][x];
+        cell.resetColour();
+    }
 
+    private void dIsPressed(){
+        if(isDeleting){
+            delete();
+        }
+
+    }
+
+    private void cellStatus(){
+        if (isPressed){
+            paint();
+        }
+    }
 
 
     @Override
@@ -114,24 +149,53 @@ public class Cursor extends Cell implements KeyboardHandler {
        switch (keyboardEvent.getKey()){
            case KeyboardEvent.KEY_LEFT:
                moveLeft();
+               cellStatus();
+               dIsPressed();
                 break;
            case (KeyboardEvent.KEY_RIGHT):
                moveRight();
+               cellStatus();
+               dIsPressed();
                break;
            case (KeyboardEvent.KEY_DOWN):
                moveDown();
+               cellStatus();
+               dIsPressed();
                break;
            case (KeyboardEvent.KEY_UP):
                moveUp();
+               cellStatus();
+               dIsPressed();
                break;
            case(KeyboardEvent.KEY_P):
                paint();
+               isPressed=true;
+               break;
+           case(KeyboardEvent.KEY_D):
+               delete();
+               isDeleting=true;
+               break;
+           case(KeyboardEvent.KEY_L):
+               grid.loadFile();
+               break;
+           case(KeyboardEvent.KEY_S):
+               grid.saveFile();
        }
 
     }
 
     @Override
     public void keyReleased(KeyboardEvent keyboardEvent) {
+
+        switch(keyboardEvent.getKey()){
+            case KeyboardEvent.KEY_P :
+                isPressed = false;
+                break;
+            case KeyboardEvent.KEY_D:
+                isDeleting = false;
+                break;
+
+        }
 
     }
 

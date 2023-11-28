@@ -1,5 +1,7 @@
 package io.codeforall.heapsdontlie;
 
+import java.io.*;
+
 public class Grid {
 
     public static final int PADDING = 10;
@@ -9,7 +11,6 @@ public class Grid {
     private int col;    // X
 
     private int row;    //Y
-
 
     private Cell[][] list;
 
@@ -56,5 +57,60 @@ public class Grid {
         return this.list;
 
     }
+
+    public void saveFile(){
+
+        try {
+            BufferedWriter bufferedWriter= new BufferedWriter(new FileWriter("LidlPaint/resources/paint.txt"));
+
+            for(int i = 0; i< list.length; i++ ){
+                for(int j = 0; j< list[i].length; j++){
+                    if(list[i][j].isPainted()){
+                        bufferedWriter.write("1");
+                    }else {
+                        bufferedWriter.write("0");
+                    }
+                }
+
+                bufferedWriter.write("\n");
+
+            }
+            bufferedWriter.close();
+
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+    }
+
+    public void loadFile(){
+
+        try {
+
+            String line;
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("LidlPaint/resources/paint.txt"));
+
+            for(int i = 0 ; i < list.length; i++){
+                line= bufferedReader.readLine();
+                for(int j = 0; j< list[i].length; j++ ){
+                    if(line.charAt(j)=='0'){
+                        list[i][j].resetColour();
+                    }else{
+                        list[i][j].changeColor();
+                    }
+                }
+            }
+
+
+
+            bufferedReader.close();
+
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+    }
+
 
 }
